@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shopping List App</title>
+</head>
+<body>
+
+  <div id="shopping-list">
+    <h1>{{ header }}</h1>
+
+    <input
+      type="text"
+      v-model="newItem"
+      placeholder="Add an item"
+    >
+
+    <button @click="addItem" :disabled="newItem === ''">
+      Add
+    </button>
+
+    <p v-if="items.length === 0">
+      The shopping list is empty.
+    </p>
+
+    <ul v-else>
+      <li
+        v-for="item in items"
+        :key="item.id"
+        :class="{ done: item.done }"
+      >
+        <input type="checkbox" v-model="item.done">
+
+        {{ item.label }}
+
+        <button @click="removeItem(item.id)">
+          Remove
+        </button>
+      </li>
+    </ul>
+
+    <p>
+      Items left: {{ itemsLeft }}
+    </p>
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    Vue.createApp({
+      data() {
+        return {
+          header: 'Shopping List App',
+          newItem: '',
+          items: [
+            { id: 1, label: '10 party hats', done: false },
+            { id: 2, label: '2 board games', done: false },
+            { id: 3, label: '20 cups', done: false }
+          ]
+        }
+      },
+
+      computed: {
+        itemsLeft() {
+          return this.items.filter(item => !item.done).length;
+        }
+      },
+
+      methods: {
+        addItem() {
+          if (this.newItem === '') return;
+
+          this.items.push({
+            id: Date.now(),
+            label: this.newItem,
+            done: false
+          });
+
+          this.newItem = '';
+        },
+
+        removeItem(id) {
+          this.items = this.items.filter(item => item.id !== id);
+        }
+      }
+    }).mount('#shopping-list')
+  </script>
+
+</body>
+</html>
